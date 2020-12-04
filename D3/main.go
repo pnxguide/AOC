@@ -8,7 +8,7 @@ import (
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-	row, col := 0, 0
+	row := 0
 	x := 3
 	cnt := 0
 
@@ -28,12 +28,12 @@ func main() {
 		str := string(line)
 		rowLength := len(str)
 
-		if str[col+(row*x)%rowLength] == '#' {
+		if str[(row*x)%rowLength] == '#' {
 			cnt++
 		}
 
 		/*
-			if str[col+(row/2)%rowLength] == '#' {
+			if str[(row/2)%rowLength] == '#' {
 				cnt++
 			}
 		*/
