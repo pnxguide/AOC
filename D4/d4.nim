@@ -20,8 +20,8 @@ proc solve1() =
     while not file.endOfFile():
         var line = file.readLine()
         if(line != ""):
-            entry.add(" ")
             entry.add(line)
+            entry.add(" ")
         else:
             if countScore1(entry.replace(re":(\S+)").split(' ')) == 7:
                 inc(cnt)
