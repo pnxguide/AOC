@@ -13,20 +13,20 @@ public class D7B {
             String[] allBags = line.split(" bags contain ");
 
             String bagColor = allBags[0];
-            String[] bagInsideArray = allBags[1].split(" (bag)s{0,1}(, |.)");
+            String[] innerBagArray = allBags[1].split(" (bag)s{0,1}(, |.)");
 
-            Map<String, Integer> bagInsideMap = new HashMap<>();
-            for(String b : bagInsideArray) {
+            Map<String, Integer> innerBagMap = new HashMap<>();
+            for(String b : innerBagArray) {
                 if(b.equals("no other")) continue;
                 String[] bagColorAndCount = b.split(" ", 2);
 
                 int bagCount = Integer.parseInt(bagColorAndCount[0]);
-                String bagInsideColor = bagColorAndCount[1];
+                String innerBagColor = bagColorAndCount[1];
 
-                bagInsideMap.put(bagInsideColor, bagCount);
+                innerBagMap.put(innerBagColor, bagCount);
             }
 
-            colorMap.put(bagColor, bagInsideMap);
+            colorMap.put(bagColor, innerBagMap);
         }
 
         // depth first search
@@ -44,13 +44,13 @@ public class D7B {
             int currentCount = currentStack.pop() * parentStack.pop();
             totalBagCount += currentCount;
 
-            Map<String, Integer> bagInsideMap = colorMap.get(currentColor);
+            Map<String, Integer> innerBagMap = colorMap.get(currentColor);
             if(colorMap.get(currentColor) == null) continue;
-            Set<String> bagInsideSet = bagInsideMap.keySet();
+            Set<String> innerBagSet = innerBagMap.keySet();
 
-            for(String bag : bagInsideSet) {
+            for(String bag : innerBagSet) {
                 colorStack.push(bag);
-                currentStack.push(bagInsideMap.get(bag));
+                currentStack.push(innerBagMap.get(bag));
                 parentStack.push(currentCount);
             }
         }

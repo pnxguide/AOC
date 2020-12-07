@@ -13,20 +13,20 @@ public class D7 {
             String[] allBags = line.split(" bags contain ");
 
             String bagColor = allBags[0];
-            String[] bagInsideArray = allBags[1].split(" (bag)s{0,1}(, |.)");
+            String[] innerBagArray = allBags[1].split(" (bag)s{0,1}(, |.)");
 
-            for(String b : bagInsideArray) {
+            for(String b : innerBagArray) {
                 if(b.equals("no other")) continue;
-                String bagInsideColor = b.replaceAll("[0-9]+ ", "");
+                String innerBagColor = b.replaceAll("[0-9]+ ", "");
 
-                if(colorMap.get(bagInsideColor) == null) {
-                    colorMap.put(bagInsideColor, new HashSet<>());
+                if(colorMap.get(innerBagColor) == null) {
+                    colorMap.put(innerBagColor, new HashSet<>());
                 }
 
-                Set<String> bagInsideSet = colorMap.get(bagInsideColor);
-                bagInsideSet.add(bagColor);
+                Set<String> innerBagSet = colorMap.get(innerBagColor);
+                innerBagSet.add(bagColor);
 
-                colorMap.put(bagInsideColor, bagInsideSet);
+                colorMap.put(innerBagColor, innerBagSet);
             }
         }
 
