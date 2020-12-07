@@ -17,7 +17,7 @@ public class D7B {
 
             Map<String, Integer> innerBagMap = new HashMap<>();
             for(String b : innerBagArray) {
-                if(b.equals("no other")) continue;
+                if(b.equals("no other")) break;
                 String[] bagColorAndCount = b.split(" ", 2);
 
                 int bagCount = Integer.parseInt(bagColorAndCount[0]);
@@ -28,12 +28,13 @@ public class D7B {
 
             colorMap.put(bagColor, innerBagMap);
         }
+        in.close();
 
         // depth first search
         int totalBagCount = 0;
-        Stack<String> colorStack = new Stack<>();
-        Stack<Integer> currentStack = new Stack<>();
-        Stack<Integer> parentStack = new Stack<>();
+        Deque<String> colorStack = new ArrayDeque<>();
+        Deque<Integer> currentStack = new ArrayDeque<>();
+        Deque<Integer> parentStack = new ArrayDeque<>();
 
         colorStack.push("shiny gold");
         currentStack.push(1);
@@ -56,7 +57,5 @@ public class D7B {
         }
         
         System.out.println(totalBagCount - 1 /* uncount the shiny gold bag */);
-
-        in.close();
     }
 }

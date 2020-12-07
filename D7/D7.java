@@ -16,7 +16,7 @@ public class D7 {
             String[] innerBagArray = allBags[1].split(" (bag)s{0,1}(, |.)");
 
             for(String b : innerBagArray) {
-                if(b.equals("no other")) continue;
+                if(b.equals("no other")) break;
                 String innerBagColor = b.replaceAll("[0-9]+ ", "");
 
                 if(colorMap.get(innerBagColor) == null) {
@@ -29,10 +29,11 @@ public class D7 {
                 colorMap.put(innerBagColor, innerBagSet);
             }
         }
+        in.close();
 
         // depth first search
         Set<String> answers = new HashSet<>();
-        Stack<String> dfs = new Stack<>();
+        Deque<String> dfs = new ArrayDeque<>();
         dfs.push("shiny gold");
 
         while(!dfs.isEmpty()) {
@@ -49,6 +50,5 @@ public class D7 {
         }
         
         System.out.println(answers.size());
-        in.close();
     }
 }
