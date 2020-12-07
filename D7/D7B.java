@@ -31,16 +31,17 @@ public class D7B {
 
         // depth first search
         int totalBagCount = 0;
-        Stack<DFSParameters> dfs = new Stack<>();
-        dfs.push(new DFSParameters("shiny gold", 1, 1));
+        Stack<String> colorStack = new Stack<>();
+        Stack<Integer> currentStack = new Stack<>();
+        Stack<Integer> parentStack = new Stack<>();
 
-        while(!dfs.isEmpty()) {
-            DFSParameters params = dfs.pop();
+        colorStack.push("shiny gold");
+        currentStack.push(1);
+        parentStack.push(1);
 
-            System.out.println(params);
-
-            String currentColor = params.color;
-            int currentCount = params.bagCount * params.parentBagCount;
+        while(!colorStack.isEmpty()) {
+            String currentColor = colorStack.pop();
+            int currentCount = currentStack.pop() * parentStack.pop();
             totalBagCount += currentCount;
 
             Map<String, Integer> bagInsideMap = colorMap.get(currentColor);
@@ -48,32 +49,14 @@ public class D7B {
             Set<String> bagInsideSet = bagInsideMap.keySet();
 
             for(String bag : bagInsideSet) {
-                dfs.push(new DFSParameters(bag, bagInsideMap.get(bag), currentCount));
+                colorStack.push(bag);
+                currentStack.push(bagInsideMap.get(bag));
+                parentStack.push(currentCount);
             }
         }
         
         System.out.println(totalBagCount - 1 /* uncount the shiny gold bag */);
 
         in.close();
-    }
-}
-
-class DFSParameters {
-    String color;
-    int bagCount;
-    int parentBagCount;
-
-    DFSParameters(String color, 
-        int bagCount, 
-        int parentBagCount) {
-
-        this.color = color;
-        this.bagCount = bagCount;
-        this.parentBagCount = parentBagCount;
-    }
-
-    @Override
-    public String toString() {
-        return color + " " + bagCount + " " + parentBagCount;
     }
 }
