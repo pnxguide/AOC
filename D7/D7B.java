@@ -13,7 +13,7 @@ public class D7B {
             String[] allBags = line.split(" bags contain ");
 
             String bagColor = allBags[0];
-            String[] bagInsideArray = allBags[1].split(" (bag)s{0,1}(,|.)( ){0,1}");
+            String[] bagInsideArray = allBags[1].split(" (bag)s{0,1}(, |.)");
 
             Map<String, Integer> bagInsideMap = new HashMap<>();
             for(String b : bagInsideArray) {

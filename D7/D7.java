@@ -13,7 +13,7 @@ public class D7 {
             String[] allBags = line.split(" bags contain ");
 
             String bagColor = allBags[0];
-            String[] bagInsideArray = allBags[1].split(" (bag)s{0,1}(,|.)( ){0,1}");
+            String[] bagInsideArray = allBags[1].split(" (bag)s{0,1}(, |.)");
 
             for(String b : bagInsideArray) {
                 if(b.equals("no other")) continue;
