@@ -46,9 +46,9 @@ public class D7B {
             totalBagCount += currentCount;
 
             Map<String, Integer> innerBagMap = colorMap.get(currentColor);
-            if(colorMap.get(currentColor) == null) continue;
-            Set<String> innerBagSet = innerBagMap.keySet();
+            if(innerBagMap == null) continue;
 
+            Set<String> innerBagSet = innerBagMap.keySet();
             for(String bag : innerBagSet) {
                 colorStack.push(bag);
                 currentStack.push(innerBagMap.get(bag));
