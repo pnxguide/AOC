@@ -32,6 +32,7 @@ public class D7B {
 
         // depth first search
         int totalBagCount = 0;
+        
         Deque<String> colorStack = new ArrayDeque<>();
         Deque<Integer> currentStack = new ArrayDeque<>();
         Deque<Integer> parentStack = new ArrayDeque<>();
