@@ -10,9 +10,9 @@ def solve1():
         if len(list) is 25:
             is_valid = False
 
-            for i, numOuter in enumerate(list):
-                for j, numInner in enumerate(list, start=(i + 1)):
-                    if numOuter + numInner == num:
+            for i, num_outer in enumerate(list):
+                for j, num_inner in enumerate(list, start=(i + 1)):
+                    if num_outer + num_inner == num:
                         is_valid = True
                         break
                 if is_valid:
