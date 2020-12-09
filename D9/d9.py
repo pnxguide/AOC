@@ -42,10 +42,10 @@ def solve2(INVALID_NUM):
 
     for i in range(len(cumulative_list)):
         for j in range(i - 1):
-            if cumulative_list[i] - cumulative_list[j] == INVALID_NUM:
+            if cumulative_list[i] - cumulative_list[j - 1] == INVALID_NUM:
                 min = INVALID_NUM
                 max = 0
-                for k in range(j + 1, i + 1):
+                for k in range(j, i + 1):
                     if list[k] < min:
                         min = list[k]
                     elif list[k] > max:
