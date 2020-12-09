@@ -16,11 +16,10 @@ public class D8 {
 
         String[] ops = opCodeList.toArray(String[]::new);
         Integer[] vals = opValueList.toArray(Integer[]::new);
-        
-        boolean[] isVisited = new boolean[ops.length];
 
         int accumulator = 0;
         int ptr = 0;
+        boolean[] isVisited = new boolean[ops.length];
 
         while(!isVisited[ptr]) {
             isVisited[ptr] = true;
