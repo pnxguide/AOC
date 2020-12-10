@@ -31,6 +31,7 @@ function solve2()
     ones = 0
     arrangement = 1
 
+    # A000073 Tribonacci numbers: a(n) = a(n − 1) + a(n − 2) + a(n − 3) 
     multiple = [1, 2, 4, 7, 13]
 
     for i = 2:size(sorted)[1]
