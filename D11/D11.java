@@ -47,6 +47,7 @@ public class D11 {
                             }
 
                             break;
+                            
                         case 'L':
                             if(i-1 >= 0 && j-1 >= 0 && grid[i-1][j-1] == '#')               count--;
                             if(i-1 >= 0 && grid[i-1][j] == '#')                             count--;

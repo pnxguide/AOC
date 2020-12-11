@@ -13,8 +13,6 @@ public class D11B {
         int rowSize = lines.size();
         int colSize = lines.get(0).length();
 
-        int minSize = Math.min(rowSize, colSize);
-
         char[][] grid = new char[rowSize][colSize];
         for(int i = 0; i < rowSize; i++) {
             grid[i] = lines.get(i).toCharArray();
@@ -120,6 +118,7 @@ public class D11B {
                             }
 
                             break;
+                            
                         case 'L':
                             // upper left
                             for(int x = 1; i-x >= 0 && j-x >= 0; x++) {
