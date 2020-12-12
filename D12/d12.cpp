@@ -52,6 +52,7 @@ void solve1() {
                 break;
         }
     }
+
     cout << abs(xPos) + abs(yPos) << endl;
 }
 
@@ -98,8 +99,8 @@ void solve2() {
                 yPos += yWaypointPos * val;
                 break;
         }
-        cout << xPos << " " << yPos << endl;
     }
+
     cout << abs(xPos) + abs(yPos) << endl;
 }
 
