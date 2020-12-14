@@ -13,7 +13,7 @@ public class D13 {
         for(int i = 0; i < line.length; i++) {
             if(!line[i].equals("x")) {
                 int busTime = Integer.parseInt(line[i]);
-                int remainingTime = busTime - time % busTime;
+                int remainingTime = (busTime - time) % busTime;
                 if(remainingTime < minTime) {
                     minTime = remainingTime;
                     ans = remainingTime * busTime;
