@@ -30,12 +30,15 @@ public class D18 {
                     long sum = nums.removeFirst();
                     while(!ops.isEmpty()) {
                         char op = ops.removeFirst();
+                        
+                        // part 2
                         if(op == '*' && ops.contains('+')) {
                             nums.addLast(sum);
                             ops.addLast('*');
                             sum = nums.removeFirst();
                             continue;
                         }
+
                         long b = nums.removeFirst();
                         switch(op) {
                             case '+':
