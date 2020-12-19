@@ -19,9 +19,10 @@ object D19 {
                     val idx = tokens(0).toInt
                     regexs(idx) = "( " + tokens(1).replace("\"", "") + " )"
                     
-                    if(regexs(idx).matches("[ab]")) {
+                    // part 1
+                    // if(regexs(idx).matches("[ab]")) {
                     // part 2
-                    // if(regexs(idx).matches("[ab]") || idx == 0 || idx == 8 || idx == 11) {
+                    if(regexs(idx).matches("[ab]") || idx == 0 || idx == 8 || idx == 11) {
                         isMapped(idx) = true
                         isMappedCnt += 1
                     }
@@ -64,36 +65,26 @@ object D19 {
         }
 
         // part 2
-        /*
         regexs(8) = regexs(8).replace(" " + "42" + " ", " " + regexs(42) + " ")
             .replace("8", "")
             .replace(" ", "") + "+"
         
         regexs(11) = "("
         for(i <- 1 to 40) {
-            
-            for(j <- 1 to i) {
-                regexs(11) += regexs(42)
-            }
-
-            for(j <- 1 to i) {
-                regexs(11) += regexs(31)
-            }
-
+            regexs(11) += regexs(42) + "{" + i + "}"
+            regexs(11) += regexs(31) + "{" + i + "}"
             if(i != 40) {
                 regexs(11) += "|"
             }
-
-            println(i)
         }
         regexs(11) += ")"
+        
+        // part 1
+        // val regex = regexs(0).replace(" ", "")
         
         val regex = regexs(0).replace(" " + "8" + " ", " " + regexs(8) + " ")
             .replace(" " + "11" + " ", " " + regexs(11) + " ")
             .replace(" ", "")
-        */
-
-        val regex = regexs(0).replace(" ", "")
 
         var cnt: Int = 0
         for(stmt <- stmts) {
