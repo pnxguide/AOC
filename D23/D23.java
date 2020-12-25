@@ -29,7 +29,7 @@ class CircularLinkedList {
     }
 
     void printOrder() {
-        Node q = index[1];
+        Node q = find(1);
         while(q.next.data != 1) {
             System.out.print(q.next.data);
             q = q.next;
