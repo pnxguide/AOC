@@ -2,5 +2,5 @@
 
 ## 2021 Difficulty Rating
 | Day | Difficulty |
-|-------|---|
+|-|-|
 | 1 | 🧠 |
