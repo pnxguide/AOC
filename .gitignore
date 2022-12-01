@@ -3,5 +3,5 @@
 !*.*
 *.txt
 *.class
-.vscode
-.DS-STORE
+.vscode/
+.DS_Store/
