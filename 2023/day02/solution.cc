@@ -67,27 +67,30 @@ void solve_B()
     switch (mine)
     {
       case 'X':
+        score += 0;
         switch (opponent)
         {
-          case 'A': score += 0 + 3; break;
-          case 'B': score += 0 + 1; break;
-          case 'C': score += 0 + 2; break;
+          case 'A': score += 3; break;
+          case 'B': score += 1; break;
+          case 'C': score += 2; break;
         }
         break;
       case 'Y':
+        score += 3;
         switch (opponent)
         {
-          case 'A': score += 3 + 1; break;
-          case 'B': score += 3 + 2; break;
-          case 'C': score += 3 + 3; break;
+          case 'A': score += 1; break;
+          case 'B': score += 2; break;
+          case 'C': score += 3; break;
         }
         break;
       case 'Z':
+        score += 6;
         switch (opponent)
         {
-          case 'A': score += 6 + 2; break;
-          case 'B': score += 6 + 3; break;
-          case 'C': score += 6 + 1; break;
+          case 'A': score += 2; break;
+          case 'B': score += 3; break;
+          case 'C': score += 1; break;
         }
         break;
     }
