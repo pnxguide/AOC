@@ -52,13 +52,11 @@ void solve_B()
   size_t sum = 0;
 
   std::string line;
-  
   for (size_t j = 0; j < 300; j += 3)
   {
     std::vector<size_t> count(53, 0);
     for (size_t l = 0; l < 3; l++)
     {
-      // First half 150
       input_file >> line;
       std::vector<bool> occur(53, false);
       for (size_t i = 0; i < line.size(); i++)
