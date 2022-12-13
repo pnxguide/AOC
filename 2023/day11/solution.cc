@@ -7,6 +7,10 @@
 #include <set>
 #include <unordered_map>
 
+/**
+ * Require pre-processing
+*/
+
 void tokenize(const std::string &s, const char delim,
             std::vector<std::string> &out)
 {
