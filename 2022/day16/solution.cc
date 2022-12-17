@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <algorithm>
 
-#define BOUND 26
+int BOUND = 30;
 
 void tokenize(const std::string &s, const char delim,
             std::vector<std::string> &out)
@@ -64,12 +64,17 @@ int recursion_A(int current_time, int current_node, std::set<int> is_visited)
 
   is_visited.insert(current_node);
 
-  if (current_time >= BOUND) return 0;
+  if (current_time > BOUND) 
+  {
+    recursion_A_table[h] = 0;
+    return 0;
+  }
+
   else
   {
     // Calculate yields and use the maximum one
     int max_yield = 0;
-    for (int k = 1; k < nnz; k++)
+    for (int k = 0; k < nnz; k++)
     {
       int i = nonzero_map[k];
       if (is_visited.find(i) != is_visited.end()) continue;
@@ -77,9 +82,17 @@ int recursion_A(int current_time, int current_node, std::set<int> is_visited)
       int yield = ((BOUND - current_time) - shortest[current_node][i] - 1) * V[i];
       if (yield > 0)
       {
-        max_yield = std::max(max_yield, yield + recursion_A(current_time + shortest[current_node][i] + 1, i, is_visited));
+        max_yield = std::max(
+          max_yield, 
+          yield + recursion_A(current_time + shortest[current_node][i] + 1, i, is_visited));
       }
     }
+
+    // if (max_yield != 0)
+    // {
+    //   for (size_t i = 0; i < level * 2; i++) std::cout << " ";
+    //   std::cout << "(" << map_V[current_node] << ") " << max_yield << std::endl;
+    // }
 
     recursion_A_table[h] = max_yield;
     return max_yield;
@@ -116,7 +129,7 @@ int recursion_B(int current_time1, int current_time2, int current_node1, int cur
   is_visited.insert(current_node1);
   is_visited.insert(current_node2);
 
-  if (current_time1 >= BOUND && current_time2 >= BOUND) 
+  if (current_time1 > BOUND && current_time2 > BOUND) 
   {
     recursion_B_table[h] = 0;
     return 0;
@@ -126,85 +139,132 @@ int recursion_B(int current_time1, int current_time2, int current_node1, int cur
     // Calculate yields and use the maximum one
     int max_yield = 0;
 
-    std::vector<int> yields1(nnz);
-    std::vector<int> yields2(nnz);
+    std::vector<int> yields1(50);
+    std::vector<int> yields2(50);
     std::vector<int> yields1_list;
     std::vector<int> yields2_list;
     
-    for (int i = 1; i < nnz; i++)
+    for (int k = 0; k < nnz; k++)
     {
-      int x = nonzero_map[i];
+      int i = nonzero_map[k];
 
-      if (is_visited.find(x) == is_visited.end())
+      if (is_visited.find(i) == is_visited.end())
       {
-        yields1[i] = ((BOUND - current_time1) - shortest[current_node1][x] - 1) * V[x];
-        yields2[i] = ((BOUND - current_time2) - shortest[current_node2][x] - 1) * V[x];
+        yields1[i] = ((BOUND - current_time1) - shortest[current_node1][i] - 1) * V[i];
+        yields2[i] = ((BOUND - current_time2) - shortest[current_node2][i] - 1) * V[i];
 
         if (yields1[i] > 0)
         {
           yields1_list.push_back(i);
-          // std::cout << "1: " << map_V[x] << std::endl;
         }
 
         if (yields2[i] > 0) 
         {
           yields2_list.push_back(i);
-          // std::cout << "2: " << map_V[x] << std::endl;
         }
       }
     }
 
-    for (int x : yields1_list)
+    // Expand two directions
+    for (int i : yields1_list)
     {
-      int i = nonzero_map[x];
-      int yield1 = yields1[x];
+      // int i = nonzero_map[x];
+      int yield1 = yields1[i];
 
-      for (int y : yields2_list)
+      for (int j : yields2_list)
       {
-        int j = nonzero_map[y];
-        int yield2 = yields2[y];
+        // int j = nonzero_map[y];
+        int yield2 = yields2[j];
 
-        // Expand two directions
         if (i != j)
         {
-          std::cout << map_V[i] << " (" << current_time1 << ") / " << map_V[j] << " (" << current_time2 << ")" << std::endl;
-          // std::cout << map_V[i] << " (" << shortest[current_node1][i] << ") / " << map_V[j] << " (" << shortest[current_node2][j] << ")" << std::endl;
-          std::cout << "Yield: " << yield1 + yield2 << " (" << yield1 << " + " << yield2 << ")" << std::endl;
+          // std::cout << map_V[i] << " (" << current_time1 << ") / " << map_V[j] << " (" << current_time2 << ")" << std::endl;
+          // std::cout << "Yield: " << yield1 + yield2 << " (" << yield1 << " + " << yield2 << ")" << std::endl;
 
-          max_yield = std::max(
-            max_yield, 
-            yield1 + yield2 + recursion_B(
-              current_time1 + shortest[current_node1][i] + 1,
-              current_time2 + shortest[current_node2][j] + 1,
-              i, j, is_visited));
+          int two_dir = yield1 + yield2 + recursion_B(
+            current_time1 + shortest[current_node1][i] + 1,
+            current_time2 + shortest[current_node2][j] + 1,
+            i, j, is_visited);
+
+          // std::cout << "Yield Received: " << two_dir << std::endl;
+            
+          max_yield = std::max(max_yield, two_dir);
         }
 
-        // Expand only one direction
-        // if ()
-        {
-          std::cout << "(1st) " << map_V[i] << " (" << current_time1 << ")" << std::endl;
-          std::cout << "Yield: " << yield1 << std::endl;
+        // // Expand only one direction
+        // {
+        //   // std::cout << "(1st) " << map_V[i] << " (" << current_time1 << ")" << std::endl;
+        //   // std::cout << "Yield: " << yield1 << std::endl;
 
-          max_yield = std::max(
-            max_yield, 
-            yield1 + recursion_A(
-              current_time1 + shortest[current_node1][i] + 1,
-              i, is_visited));
-        }
+        //   int one_dir = yield1 + recursion_A(
+        //     current_time1 + shortest[current_node1][i] + 1,
+        //     i, is_visited);
+          
+        //   // std::cout << "Yield Received: " << one_dir << std::endl;
+            
+        //   max_yield = std::max(max_yield, one_dir);
+        // }
 
-        // if (which_case == -1 || which_case == 2)
-        {
-          std::cout << "(2nd) " << map_V[j] << " (" << current_time2 << ")" << std::endl;
-          std::cout << "Yield: " << yield2 << std::endl;
+        // {
+        //   // std::cout << "(2nd) " << map_V[j] << " (" << current_time2 << ")" << std::endl;
+        //   // std::cout << "Yield: " << yield2 << std::endl;
 
-          max_yield = std::max(
-            max_yield, 
-            yield2 + recursion_A(
-              current_time2 + shortest[current_node2][j] + 1,
-              j, is_visited));
-        }
+        //   int one_dir = yield2 + recursion_A(
+        //     current_time2 + shortest[current_node2][j] + 1,
+        //     j, is_visited);
+
+        //   // std::cout << "Yield Received: " << one_dir << std::endl;
+          
+        //   max_yield = std::max(max_yield, one_dir);
+        // }
       }
     }
+
+    // Go for one to the left
+    for (int i : yields1_list)
+    {
+      int yield1 = yields1[i];
+
+      // Expand only one direction
+      {
+        // std::cout << "(1st) " << map_V[i] << " (" << current_time1 << ")" << std::endl;
+        // std::cout << "Yield: " << yield1 << std::endl;
+
+        int one_dir = yield1 + recursion_A(
+          current_time1 + shortest[current_node1][i] + 1,
+          i, is_visited);
+        
+        // std::cout << "Yield Received: " << one_dir << std::endl;
+          
+        max_yield = std::max(max_yield, one_dir);
+      }
+    }
+
+    // Go for one to the right
+    for (int i : yields2_list)
+    {
+      int yield2 = yields1[i];
+      
+      // Expand only one direction
+      {
+        // std::cout << "(1st) " << map_V[i] << " (" << current_time1 << ")" << std::endl;
+        // std::cout << "Yield: " << yield1 << std::endl;
+
+        int one_dir = yield2 + recursion_A(
+          current_time2 + shortest[current_node2][i] + 1,
+          i, is_visited);
+        
+        // std::cout << "Yield Received: " << one_dir << std::endl;
+          
+        max_yield = std::max(max_yield, one_dir);
+      }
+    }
+
+    // if (max_yield != 0)
+    // {
+    //   for (size_t i = 0; i < level * 2; i++) std::cout << " ";
+    //   std::cout << "(" << map_V[current_node1] << "," << map_V[current_node2] << ") " << max_yield << std::endl;
+    // }
 
     recursion_B_table[h] = max_yield;
     return max_yield;
@@ -213,6 +273,8 @@ int recursion_B(int current_time1, int current_time2, int current_node1, int cur
 
 void solve_A()
 {
+  BOUND = 30;
+
   // Read an input file
   std::ifstream input_file("input.txt");
   std::string line;
@@ -232,7 +294,7 @@ void solve_A()
     tokenize(tokens[4], '=', subtokens);
     V[V_map[tokens[1]]] = std::stoi(subtokens[1]);
 
-    if (V[V_map[tokens[1]]] != 0)
+    if (V[V_map[tokens[1]]] != 0 || tokens[1] == "AA")
     {
       nonzero_map.push_back(V_map[tokens[1]]);
       reverse_nonzero_map[V_map[tokens[1]]] = nnz++;
@@ -249,7 +311,6 @@ void solve_A()
       {
         map_V[count] = tokens[i];
         V_map[tokens[i]] = count++;
-        
       }
 
       adj[V_map[tokens[1]]].insert(V_map[tokens[i]]);
@@ -270,6 +331,7 @@ void solve_A()
       // Update lengths
       for (int s : b)
       {
+        // if (shortest[k][s] == 0)
         shortest[k][s] = i;
       }
 
@@ -307,6 +369,8 @@ void solve_A()
 
 void solve_B()
 {
+  BOUND = 26;
+
   // Read an input file
   std::ifstream input_file("input.txt");
   std::string line;
@@ -364,6 +428,7 @@ void solve_B()
       // Update lengths
       for (int s : b)
       {
+        // if (shortest[k][s] == 0)
         shortest[k][s] = i;
       }
 
