@@ -224,7 +224,7 @@ void solve_B()
   {
     uint16_t max = recursion_A(id, 0, 0, 0, 0, 0, 1, 0, 0, 0);
     std::cout << (id+1) << ": " << max << std::endl;
-    maxs[id] = ((id+1) * max);
+    maxs[id] = max;
   }
 
   int product = 1;
