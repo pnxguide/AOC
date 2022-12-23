@@ -33,7 +33,7 @@ int mod(int x, int y)
 void solve_A()
 {
   // Read an input file
-  std::ifstream input_file("input.txt");
+  std::ifstream input_file("day22/input.txt");
   std::string line;
 
   std::vector< std::vector<int> > board(YY, std::vector<int>(XX, 0));
@@ -172,7 +172,7 @@ turn:
 void solve_B()
 {
   // Read an input file
-  std::ifstream input_file("input.txt");
+  std::ifstream input_file("day22/input.txt");
   std::string line;
 
   std::vector< std::vector<int> > board(YY, std::vector<int>(XX, 0));
