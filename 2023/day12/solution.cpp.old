@@ -1,0 +1,256 @@
+#include <iostream>
+#include <fstream>
+#include <deque>
+#include <set>
+#include <unordered_map>
+
+long fff(std::string puzzle, std::vector<int> trace) {
+    // Place the largest one first
+    std::vector<int> sorted = trace;
+    std::sort(sorted.begin(), sorted.end(), std::greater{});
+    std::vector<int> orders;
+    std::vector<bool> visited(trace.size());
+    for (int i = 0; i < sorted.size(); i++) {
+        for (int j = 0; j < trace.size(); j++) {
+            if (visited[j] == false && trace[j] == sorted[i]) {
+                orders.push_back(j);
+                visited[j] = true;
+                break;
+            }
+        }
+    }
+
+    long combi = 0;
+    std::deque<std::tuple<std::string, int>> dfs;
+    dfs.push_back({puzzle, 0});
+
+    while (!dfs.empty()) {
+        std::tuple<std::string, int> cur = dfs.back();
+        dfs.pop_back();
+
+        int cur_index = std::get<1>(cur);
+        if (cur_index == orders.size()) {
+            std::cout << std::get<0>(cur) << std::endl;
+            combi++;
+            continue;
+        }
+
+        int cur_trace = trace[orders[cur_index]];
+
+        // Check left
+        int left_required = 0;
+        for (int k = 0; k < orders[cur_index]; k++) {
+            left_required += trace[k];
+            left_required += 1;
+        }
+
+        // Check right
+        int right_required = 0;
+        for (int k = orders[cur_index] + 1; k < trace.size(); k++) {
+            right_required += trace[k];
+            right_required += 1;
+        }
+
+        // Try placing in different places
+        for (int j = left_required; j <= (puzzle.size() - cur_trace - right_required); j++) {
+            std::string cur_puzzle = std::get<0>(cur);
+            int start = j;
+
+            // Check immediate left
+            if (start > 0) {
+                if (cur_puzzle[start - 1] == '#') {
+                    continue;
+                } else {
+                    cur_puzzle[start - 1] = '.';
+                }
+            }
+
+            // Check immediate right
+            if (start + cur_trace < puzzle.size()) {
+                if (cur_puzzle[start + cur_trace] == '#') {
+                    continue;
+                } else {
+                    cur_puzzle[start + cur_trace] = '.';
+                }
+            }
+
+            // Try placing here
+            bool is_good = true;
+            for (int k = 0; k < cur_trace; k++) {
+                if (!(cur_puzzle[start + k] == '?' || cur_puzzle[start + k] == '#')) {
+                    is_good = false;
+                    break;
+                } else {
+                    cur_puzzle[start + k] = '#';
+                }
+            }
+            if (is_good) {
+                dfs.push_back({cur_puzzle, cur_index + 1});
+            }
+        }
+    }
+
+    return combi;
+}
+
+long v(std::vector<int> s) {
+    long hash = 0;
+    long mul = 1;
+    for (int i = 0; i < s.size(); i++) {
+        hash += (s[i] * mul);
+        mul *= 16;
+    }
+    return hash;
+}
+
+// [string_size][long][s]
+long h(std::string s) {
+    long mul = 1;
+    long hash = 0;
+    for (int i = 0; i < s.size(); i++) {
+        hash += (s[i] == '#') * mul;
+        mul *= 2;
+    }
+    return hash;
+}
+
+long r(std::unordered_map<long, std::unordered_map<long, std::unordered_map<long, std::unordered_map<long, long>>>> &memo, std::vector<std::string> groups, std::vector<int> trace, int cur_trace, std::vector<std::vector<int>> instance) {
+    long sum = 0;
+
+    // index
+    int i = instance.size();
+    // compute and return
+    if (i >= groups.size()) {
+        // TODO: 
+        // use all the traces
+        long combi = 0;
+        if (cur_trace == trace.size()) {
+            combi = 1;
+
+            for (int k = 0; k < instance.size(); k++) {
+                int group_size = groups[k].size();
+                int instance_size = instance[k].size();
+                long instance_hash = v(instance[k]);
+                int instance_total_size = 0;
+                for (int iii : instance[k]) {
+                    instance_total_size += iii;
+                }
+                // group size / instance size
+                long hash = h(groups[k]);
+
+                if (memo[group_size][instance_size][instance_hash].count(hash) == 0) {
+                    long cb = 0;
+
+                    // compute
+                    // input -> pattern, instance
+                    
+
+                    memo[group_size][instance_size][instance_hash][hash] = cb;
+                }
+
+                if (memo[group_size][instance_size][instance_hash][hash] == 0) {
+                    return 0;
+                }
+
+                combi *= memo[group_size][instance_size][instance_hash][hash];
+            }
+        }
+
+        return combi;
+    }
+
+    // no new trace
+    std::vector<std::vector<int>> new_instance;
+
+    // match pattern
+    std::string pattern = groups[i];
+    int max_size = pattern.size();
+    int cur_sum = 0;
+    std::vector<int> ts;
+
+    new_instance = instance;
+    new_instance.push_back(ts);
+    sum += r(memo, groups, trace, cur_trace, new_instance);
+
+    for (int j = cur_trace; j < trace.size(); j++) {
+        cur_sum += trace[j];
+        ts.push_back(trace[j]);
+        if (cur_sum <= max_size) {
+            // TODO: should we verify?
+            // if all ? then good
+            new_instance = instance;
+            new_instance.push_back(ts);
+            sum += r(memo, groups, trace, j+1, new_instance);
+        } else {
+            break;
+        }
+        cur_sum += 1;
+    }
+
+    return sum;
+}
+
+int main() {
+    std::ifstream infile("day12/input");
+    long sss = 0;
+
+    // group size / instance size
+    std::unordered_map<long, std::unordered_map<long, std::unordered_map<long, std::unordered_map<long, long>>>> memo;
+
+    std::string puzzle;
+    while (infile >> puzzle) {
+        std::vector<int> trace;
+        char line[64];
+        infile >> line;
+        char *token = std::strtok(line, ",");
+        while (token) {
+            std::string tk(token);
+            trace.push_back(std::stoi(tk));
+            token = std::strtok(nullptr, ",");
+        }
+
+        // Part 2
+        puzzle = puzzle + "?" + puzzle + "?" + puzzle + "?" + puzzle + "?" + puzzle;
+        int trace_size = trace.size();
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < trace_size; j++) {
+                trace.push_back(trace[j]); 
+            }
+        }
+
+        // std::cout << puzzle << std::endl;
+        // for (int jj : trace) {
+        //     std::cout << jj << " ";
+        // }
+        // std::cout << std::endl;
+
+        // Group
+        std::vector<std::string> groups;
+        std::string group;
+        for (int i = 0; i < puzzle.size(); i++) {
+            if (puzzle[i] == '.') {
+                if (group != "") {
+                    groups.push_back(group);
+                }
+                group = "";
+            } else {
+                group += puzzle[i];
+            }
+        }
+        if (group != "") {
+            groups.push_back(group);
+        }
+
+        // group, i
+        std::vector<std::vector<int>> instance;
+        long combi = r(memo, groups, trace, 0, instance);
+
+        std::cout << combi << std::endl;
+
+        sss += combi;
+    }
+
+    std::cout << sss << std::endl;
+    
+    return 0;
+}
